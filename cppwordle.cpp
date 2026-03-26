@@ -142,24 +142,17 @@ void getUserGuess(Session& info)
             continue;
         }
         
-        for (const auto& c : userGuess)
-        {
-            invalidCharacter = !(std::isalpha(c));
-            if (invalidCharacter)
-            {
-                std::cout << "Make sure the word only has letters!\n";
-                break;
-            }
-        }
+        auto invalid{std::find_if(userGuess.begin(), userGuess.end(),
+                    [](auto c) {return !std::isalpha(c);})};
+        
+        if (!(invalid == userGuess.end()))
+            std::cout << "Make sure the word only has letters!\n";
+        else
+            invalidCharacter = false;
 
-        for (const auto& word : WordleRandom::dictionary)
-        {
-            if (word == userGuess)
-            {
-                invalidWord = false;
-                break;
-            }
-        }
+        auto validWord{std::find(WordleRandom::dictionary.begin(), WordleRandom::dictionary.end(), userGuess)};
+        if (!(validWord == WordleRandom::dictionary.end()))
+            invalidWord = false;
         if (invalidWord)
         {
             std::cout << "Enter a viable word!\n";
